@@ -1,3 +1,7 @@
+<?php
+    require_once('common.php');
+    checkUserValidate();
+?>
 <html>
     <head>
 	    <meta http-equiv="Content-Type" type="text/html" charset="utf-8" /> 		

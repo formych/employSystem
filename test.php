@@ -1,0 +1,1 @@
+<img src="checkCode.php" onclick="this.src='checkCode.php?num='+Math.random()" /> 
