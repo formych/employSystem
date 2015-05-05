@@ -10,24 +10,30 @@
 			<a href = "login.php">Logout</a>
             User:<?php echo $_GET['uname']; ?>		
 		</div>
-		<h2>ManageUser</h2>
+		<h2>ManageUser</h2>		
 		<div>
 		<table border=1 cellspacing = "0" bordercolor ="blue">
 		    <tr>
-		    <td>user id</td><td>user name</td><td>user grade</td><td>user salary</td><td>user email</td><td>update user</td><td>delete user</td>
+		    <td>user id</td><td>user name</td><td>user grade</td><td>user salary</td>
+			<td>user email</td><td>update user</td><td>delete user</td>
 		    </tr>
 			<?php
 			    require_once('EmployService_class.php');
-                require_once('PageCut_class.php');				
-				
+                require_once('PageCut_class.php');	               
+                
 				$empSer = new EmployService();
 				$pagecut = new PageCut();
-								
-				$pagecut->setPage_size(6);			    
-				$pagecut->setPage_now(1); 
-                		
 				
-			    $pagecut->setPageInfo($_GET[num], $_GET[id], $pagecut, $empSer);				
+                if(!empty($_GET[flag]))
+                {
+				    echo  "Now  id ".$_GET[id] ."  has been deleted"; 
+					$empSer->delById($_GET[id]);			
+				}					
+				$pagecut->setPage_size(6);			    
+				$pagecut->setPage_now(1);
+				$pagecut->setGotoUrl('manage.php');               		
+				
+			    $pagecut->setPageInfo($_GET[page_size], $_GET[page_id], $pagecut, $empSer);				
 				
 				$arr = $pagecut->getArr();
                 			
@@ -37,7 +43,8 @@
 			        echo "<tr>";
 				    for($j = 0; $j < count($row); $j++)
 				        echo "<td>$row[$j]</td>";
-					echo "<td><a href = '#'>update user</a></td><td><a href = '#'>delete user</a></td>";
+					echo "<td><a href = {$pagecut->getGotoUrl()}>update user</a></td>
+					      <td><a href = {$pagecut->getGotoUrl()}?id={$row[0]}&&flag=del >delete user</a></td>";
 					echo "</tr>";
 				}		        
 			?>
@@ -51,8 +58,8 @@
 		</div>
 		<div>
 		    <form action = "manage.php" method = "get">
-		    Jump to: <input type = "text" name = "id"  /> 
-			<input type = "hidden" name= "num" value = "<?php echo $pagecut->getPage_size ?>" /> 
+		    Jump to: <input type = "text" name = "page_id"  /> 
+			<input type = "hidden" name= "page_size" value = "<?php echo $pagecut->getPage_size() ?>" /> 
 			<input type = "submit" value = "Go"/> <br/>
 		    </form>
 		</div>	      

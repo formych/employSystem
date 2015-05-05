@@ -1,4 +1,5 @@
 <?php
+    require('db_class.php');
     class PageCut
 	{
 	    private $page_count;
@@ -6,7 +7,8 @@
 	    private $page_now;
 	    private $row_count;	
         private $arr;
-        private	$navigate;	
+        private	$navigate;
+        private $gotoUrl;		
 		
 		function getPage_count()
 		{
@@ -62,26 +64,35 @@
 		    $this->navigate = $navigate;
 		}
 		
-		/*function getPageInfo($sql1, $sql2, $pagecut)
-		{   
-		    require('db_class.php');			
-		    $db = new db_class();
-			$db->sql_page_info($sql1, $sql2, $pagecut);	
-		}*/
-		
-		function setPageInfo ($num, $id,$pagecut,$empSer)
+		function getGotoUrl()
 		{
-		    if(!empty($num))
+		    return $this->gotoUrl;		
+		}
+		function setGotoUrl($gotoUrl)
+		{
+		    $this->gotoUrl = $gotoUrl;
+		}
+		
+		function getPageInfo($sql1, $sql2, $pagecut)
+		{   			
+		    $db = new db_class() or die (mysql_error());
+			$db->sql_page_info($sql1, $sql2, $pagecut);
+            $db->sql_close();			
+		}
+		
+		function setPageInfo ($page_size, $page_id,$pagecut,$empSer)
+		{
+		    if(!empty($page_size))
 			{
-				$pagecut->setPage_size($_GET[num]);				
+				$pagecut->setPage_size($_GET[page_size]);				
 			}				
 				
             $empSer->getPageInfo($pagecut);		
                					
-			if (!empty($id))
+			if (!empty($page_id))
  			{
-				if ($id <= $pagecut->getPage_count())
-				    $pagecut->setPage_now($id);
+				if ($page_id <= $pagecut->getPage_count())
+				    $pagecut->setPage_now($page_id);
 				else
 					$pagecut->setPage_now($pagecut->getPage_count());
 				$empSer->getPageInfo($pagecut);	
@@ -104,16 +115,16 @@
 			    $end = $pagecut->getPage_count() + 1;			
 
             if ($start > $page_whole)
-                echo "<a href = manage.php?id=".($pagecut->getPage_now()-$page_whole).
-				     "&&num=".$pagecut->getPage_size()." ><<<</a>&nbsp;";			
+                echo "<a href = {$pagecut->getGotoUrl()}?page_id=".($pagecut->getPage_now()-$page_whole).
+				     "&&page_size=".$pagecut->getPage_size()." ><<<</a>&nbsp;";			
 		    
 			for ($i = $start; $i < $end; $i++)
-			    echo "<a href = manage.php?id=$i&&num="
+			    echo "<a href = {$pagecut->getGotoUrl()}?page_id=$i&&page_size="
 				     .$pagecut->getPage_size()." >[$i]</a>&nbsp;";
 				
 			if($end <= $pagecut->getPage_count())
-			    echo "<a href = manage.php?id=".($pagecut->getPage_now()+$page_whole).
-				     "&&num=".$pagecut->getPage_size()." >>>></a>&nbsp;";	
+			    echo "<a href = {$pagecut->getGotoUrl()}?page_id=".($pagecut->getPage_now()+$page_whole).
+				     "&&page_size=".$pagecut->getPage_size()." >>>></a>&nbsp;";	
 			
 			
 		    
@@ -121,34 +132,34 @@
 			{		
 			    $previous_page = $pagecut->getPage_now() - 1; 			
 				$pagecut->setNavigate($pagecut->getNavigate().
-				    "<a href = manage.php?id=$previous_page&&num="
+				    "<a href = {$pagecut->getGotoUrl()}?page_id=$previous_page&&page_size="
 				    .$pagecut->getPage_size(). ">pre</a>&nbsp;");
 			}
             if ($pagecut->getPage_now() < $pagecut->getPage_count())	
             {
 			    $next_page = $pagecut->getPage_now() + 1;  
                 $pagecut->setNavigate($pagecut->getNavigate().
-				    "<a href = manage.php?id=$next_page&&num="
+				    "<a href = {$pagecut->getGotoUrl()}?page_id=$next_page&&page_size="
 				    .$pagecut->getPage_size()." >next</a>&nbsp;");			
             }
 			
 			$pagecut->setNavigate($pagecut->getNavigate().
-			    "<<<a href = manage.php?num=1 >1</a>&nbsp");
+			    "<<<a href = {$pagecut->getGotoUrl()}?page_size=1 >1</a>&nbsp");
 			$pagecut->setNavigate($pagecut->getNavigate().
-			    "<a href = manage.php?num=5 >5</a>&nbsp");
+			    "<a href = {$pagecut->getGotoUrl()}?page_size=5 >5</a>&nbsp");
 			$pagecut->setNavigate($pagecut->getNavigate().
-			    "<a href = manage.php?num=10 >10</a>&nbsp");
+			    "<a href = {$pagecut->getGotoUrl()}?page_size=10 >10</a>&nbsp");
 			$pagecut->setNavigate($pagecut->getNavigate().
-			    "<a href = manage.php?num=20 >20</a>&nbsp");
+			    "<a href = {$pagecut->getGotoUrl()}?page_size=20 >20</a>&nbsp");
 			$pagecut->setNavigate($pagecut->getNavigate().
-			    "<a href = manage.php?num=25 >25</a>>>&nbsp");
+			    "<a href = {$pagecut->getGotoUrl()}?page_size=25 >25</a>>>&nbsp");
             
             $pagecut->setNavigate($pagecut->getNavigate().
-				"<a href = manage.php?id=1&&num="
+				"<a href = {$pagecut->getGotoUrl()}?page_id=1&&page_size="
 				.$pagecut->getPage_size()." >Start</a>&nbsp;");			
             $pagecut->setNavigate($pagecut->getNavigate().
-				"<a href = manage.php?id=".$pagecut->getPage_count()
-				."&&num=".$pagecut->getPage_size()." >End</a>&nbsp;");				
+				"<a href = {$pagecut->getGotoUrl()}?page_id=".$pagecut->getPage_count()
+				."&&page_size=".$pagecut->getPage_size()." >End</a>&nbsp;");				
 		    
 			
 			$pagecut->setNavigate($pagecut->getNavigate().
