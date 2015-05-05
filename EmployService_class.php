@@ -11,16 +11,71 @@
 			/*$db = new db_class();
 			$db->sql_page_info($sql1, $sql2, $pagecut);	*/
 		}
-        function delById ($id)
+        function delEmpById ($id)
         {
-		    //require ('db_class');
+		    require ('db_class.php');
 			$sql = "delete from employ where id = $id";
 		    $db = new db_class();
 			$flag=$db->sql_manage($sql);
-			$db->sql_close();
-            			
+			$db->sql_close();            		
             return $flag;		
 
         }
+		
+		function addEmp($name,$pwd,$grade,$salary,$email)
+		{
+		    require ('db_class.php');	    
+			$sql = "insert into employ (name,pwd,grade,salary,email) values ('$name','md5($pwd)','$grade','$salary','$email')";
+			$db = new db_class();
+			$flag = $db->sql_manage($sql);
+			
+			$db->sql_close();
+			return $flag;		
+		}
+		
+		function updateEmpById($id,$name,$pwd,$grade,$salary,$email)
+		{
+		    require_once ('db_class.php');
+			$sql = "update employ set name='$name', pwd='$pwd', grade='$grade', salary='$salary',email='$email' where id='$id' ";
+		    $db = new db_class();
+			$flag = $db->sql_manage($sql);
+			
+			
+			$db->sql_close();
+			return $flag;
+		}
+		function queryEmpById($id)
+	    {
+		    require_once ('db_class.php');
+	        $sql = "select * from employ where id = $id";
+			$db = new db_class();
+			$arr = $db->sql_query($sql);			
+			$db->sql_close();
+			return $arr;	
+	    }
+		function queryEmpByName($name)
+	    {
+		    require_once ('db_class.php');
+	        $sql = "select id,name,grade,salary,email from employ where name= '$name' ";
+			
+			$db = new db_class();
+			$arr = $db->sql_query($sql);			
+			$db->sql_close();
+			
+			return $arr;
+          			
+	    }
+		function queryEmpByChar($name)
+	    {
+		    require_once ('db_class.php');
+	        $sql = "select id,name,grade,salary,email from employ where name like '%$name%' ";			
+			$db = new db_class();
+			$arr = $db->sql_query($sql);			
+			$db->sql_close();
+			var_dump($arr);
+			return $arr;
+          			
+	    }
+		
 	}
 ?>

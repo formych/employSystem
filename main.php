@@ -11,10 +11,10 @@
 		</div>
 	    <div class = "style1">
 		<h2>MainPage</h2>
-		<a href = "#">AddUsers</a>     <br/>
+		<a href = "addEmp.php">AddUsers</a>     <br/>
 		<a href = "query.php?uname=<?php echo $_GET[uname]; ?>">QueryUsers</a>   <br/>
-		<a href = "#">DeteteUsers</a>  <br/>
 		<a href = "manage.php?uname=<?php echo $_GET[uname]; ?>">ManageUsers</a>  <br/>
+		<a href = "login.php">SafeExit</a>  <br/>
 		</div>	
 	</body>
 </html>

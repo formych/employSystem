@@ -1,7 +1,4 @@
-<!--
-    Version 0:simple query page 
-	Version 1:add user information
--->
+
 <html>
     <head>
 	    <meta http-equiv = "Content-Type" type = "text/html" charset = "utf-8"/>
@@ -17,8 +14,9 @@
 		<div>
 		    <form action = "query.php" method = "post">
 		        <h2>QueryUser</h2>
-			    Input user name:<input type = "text" name ="query" /> <input type = "submit" value = "search"/><br/>
+			    Input user name:<input type = "text" name ="name" /> <input type = "submit" value = "search"/><br/>
 				<input type = "radio" name ="module" value = "0" checked />Indistinct search   <input type = "radio" name ="module" value = "1"/> Accurate search
+			    <input type = "hidden" name = "type" value="queryEmp"/>
 			</form>		
 		</div>
 		<div>
@@ -27,23 +25,22 @@
 			<td>user id</td><td>user name</td><td>user grade</td><td>user salary</td><td>user email</td><td>update user</td><td>delete user</td>
 			</tr>			
 			<?php
-			    require('db_class.php') ;
-				if ($_POST[module] == 0)
-				    $sql = "select * from employ where name like '%$_POST[query]%'";
+			    require_once('EmployService_class.php');
+				$empSer = new EmployService();
+			    if ($_POST[module] == 0)
+				    $arr = $empSer->queryEmpByChar($_POST[name]);
 				else 
-				    $sql = "select * from employ where name = '$_POST[query]'";
-				$db = new db_class();
-	            $result = $db->sql_query($sql);
-			    while ($row = $result->fetch_row())
-				{		
+				    $arr = $empSer->queryEmpByName($_POSt[name]);			     
+				
+			    for ($i = 0; $i < count($arr); $i++)
+				{	
+                    $row = $arr[$i];				
 			        echo "<tr>";
 				    for($j = 0; $j < 5; $j++)
 				        echo "<td>$row[$j]</td>";
 					echo "<td><a href = '#'>update user</a></td><td><a href = '#'>delete user</a></td>";
 					echo "</tr>";
-				}	
-		        $db->sql_close_result();
-	            $db->sql_close_connection();
+				}		        
 			?>
 			</table>
 	

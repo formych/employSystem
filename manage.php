@@ -24,11 +24,7 @@
 				$empSer = new EmployService();
 				$pagecut = new PageCut();
 				
-                if(!empty($_GET[flag]))
-                {
-				    echo  "Now  id ".$_GET[id] ."  has been deleted"; 
-					$empSer->delById($_GET[id]);			
-				}					
+                					
 				$pagecut->setPage_size(6);			    
 				$pagecut->setPage_now(1);
 				$pagecut->setGotoUrl('manage.php');               		
@@ -43,8 +39,9 @@
 			        echo "<tr>";
 				    for($j = 0; $j < count($row); $j++)
 				        echo "<td>$row[$j]</td>";
-					echo "<td><a href = {$pagecut->getGotoUrl()}>update user</a></td>
-					      <td><a href = {$pagecut->getGotoUrl()}?id={$row[0]}&&flag=del >delete user</a></td>";
+						echo $row[0];
+					echo "<td><a href = updateEmp.php?id=$row[0]&&type=updateEmp>update user</a></td>
+					      <td><a href = empProcess_control.php?id=$row[0]&&type=delEmp >delete user</a></td>";
 					echo "</tr>";
 				}		        
 			?>

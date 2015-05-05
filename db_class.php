@@ -33,7 +33,7 @@
 		    $result = $this->mysqli->query($sql) or die($this->mysqli->error);
 			if(!$result)
 			    return 0;
-			else if($this->mysqli->affected_nums > 0)
+			else if($this->mysqli->affected_rows > 0)
 			    return 1;
 			else 
 			    return -1;
