@@ -1,7 +1,4 @@
-<!--
-    Version 0:simple page show 
-	Version 1:add user information
--->
+
 <html>
     <head>
 	    <meta http-equiv = "Content-Type" type = "text/html" charset = "utf-8" />

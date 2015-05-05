@@ -5,7 +5,7 @@
 	    private static $host = "localhost";
 		private static $user = "root";
 		private static $pwd = "root";
-		private static $db = "employ_system";
+		private static $db = "employ_system";		
     
 		function __construct()
 		{
@@ -19,14 +19,19 @@
 		
 		function sql_query($sql)
 		{
-		    $this->result = $this->mysqli->query($sql) or die($this->mysqli->error);
-			return $this->result;			
+		    $arr = array();
+			$result = $this->mysqli->query($sql) or die($this->mysqli->error);
+			while ($row = $result->fetch_row())
+			    $arr[] = $row; 
+				
+			$result->free();
+			return $arr;			
 		}
 		
 		function sql_manage($sql)
 		{
-		    $this->result = $this->mysqli->query($sql) or die($this->mysqli->error);
-			if(!$this->result)
+		    $result = $this->mysqli->query($sql) or die($this->mysqli->error);
+			if(!$result)
 			    return 0;
 			else if($this->mysqli->affected_nums > 0)
 			    return 1;
@@ -34,13 +39,11 @@
 			    return -1;
 		
 		}
-		function sql_close_result()
+		
+		function sql_close()
 		{
-		    $this->result->free();
-		}
-		function sql_close_connection()
-		{
-		    $this->mysqli->close();
+		    if (!empty($this->mysqli))
+			$this->mysqli->close();
 		}		
 	}	
 ?>

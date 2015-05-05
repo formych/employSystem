@@ -1,7 +1,4 @@
-<!--
-    Version 0:simple login
-	Version 1:add return incorrect information
--->
+
 <html>
     <head>
 	<link rel="stylesheet" type="text/css"  href="css/Login.css"/>

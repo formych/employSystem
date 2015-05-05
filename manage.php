@@ -17,59 +17,57 @@
 		    <td>user id</td><td>user name</td><td>user grade</td><td>user salary</td><td>user email</td><td>update user</td><td>delete user</td>
 		    </tr>
 			<?php
-			    require('db_class.php') ;
-				$sql_count = "select count(id) from employ";
-				$db = new db_class();
-				$result_count = $db->sql_query($sql_count) or die (mysql_error());
-				if ($row = $result_count->fetch_row())
-				{
-				    $row_count = $row[0];
-				}			
+			    require_once('EmployService_class.php');		
+				
+				$empSer = new EmployService();
 			    $page_size = 6;
 				$page_now = 1;
 				if(!empty($_GET[num]))
 				{
 				    $page_size = $_GET[num];				
 				}				
-				$page_count = ceil($row_count / $page_size);
-				
+				$page_count = $empSer->getPage_count($page_size);
+								
 				if (!empty($_GET[id]))
  				{
 				    if ($_GET[id] <= $page_count)
 				        $page_now = $_GET[id];
 					else
 					    $page_now = $page_count;
-				}
+				}		
 				
-				
-				$sql = "select * from employ limit ".($page_now-1)*$page_size.", $page_size ";
-				$result = $db->sql_query($sql);				
-			    while ($row = $result->fetch_row())
-				{		
+				$arr = $empSer->getEmpListByPage($page_now, $page_size);
+                				
+			    for ($i = 0 ;$i<count($arr);$i++)
+				{	
+				    $row = $arr[$i];	
 			        echo "<tr>";
 				    for($j = 0; $j < 5; $j++)
 				        echo "<td>$row[$j]</td>";
 					echo "<td><a href = '#'>update user</a></td><td><a href = '#'>delete user</a></td>";
 					echo "</tr>";
 				}	
-		        $db->sql_close_result();
-	            $db->sql_close_connection();
+		        
 			?>
 		</table>
 		</div>
 		<div>
 		<?php		    
-			//else 
-			//    echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-			$start = $page_now ;		              
-      		$end = $start + 9;
+			$page_whole = 10;
+			$start = floor(($page_now - 1)/$page_whole) * $page_whole + 1;
+            $end = $start + $page_whole;
 			if ($end > $page_count)
-			{
-			    $end = $page_count;
-			}
-            			
-		    for ($i = $start; $i <= $end; $i++)
-			    echo "<a href = manage.php?id=$i&&num=$page_size ><$i></a>&nbsp;";
+			    $end = $page_count + 1;			
+
+            if ($start > $page_whole)
+                echo "<a href = manage.php?id=".($page_now-$page_whole)."&&num=$page_size ><<</a>&nbsp;";			
+		    
+			for ($i = $start; $i < $end; $i++)
+			    echo "<a href = manage.php?id=$i&&num=$page_size >[$i]</a>&nbsp;";
+				
+			if($end <= $page_count)
+			    echo "<a href = manage.php?id=".($page_now+$page_whole)."&&num=$page_size >>></a>&nbsp;";
+			
 			if ($page_now > 1)
 			{		
 			    $previous_page = $page_now - 1; 			
