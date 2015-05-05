@@ -12,88 +12,47 @@
 		</div>
 		<h2>ManageUser</h2>
 		<div>
-		<table border=1>
+		<table border=1 cellspacing = "0" bordercolor ="blue">
 		    <tr>
 		    <td>user id</td><td>user name</td><td>user grade</td><td>user salary</td><td>user email</td><td>update user</td><td>delete user</td>
 		    </tr>
 			<?php
-			    require_once('EmployService_class.php');		
+			    require_once('EmployService_class.php');
+                require_once('PageCut_class.php');				
 				
 				$empSer = new EmployService();
-			    $page_size = 6;
-				$page_now = 1;
-				if(!empty($_GET[num]))
-				{
-				    $page_size = $_GET[num];				
-				}				
-				$page_count = $empSer->getPage_count($page_size);
+				$pagecut = new PageCut();
 								
-				if (!empty($_GET[id]))
- 				{
-				    if ($_GET[id] <= $page_count)
-				        $page_now = $_GET[id];
-					else
-					    $page_now = $page_count;
-				}		
+				$pagecut->setPage_size(6);			    
+				$pagecut->setPage_now(1); 
+                		
 				
-				$arr = $empSer->getEmpListByPage($page_now, $page_size);
-                				
+			    $pagecut->setPageInfo($_GET[num], $_GET[id], $pagecut, $empSer);				
+				
+				$arr = $pagecut->getArr();
+                			
 			    for ($i = 0 ;$i<count($arr);$i++)
-				{	
-				    $row = $arr[$i];	
+				{				    
+                    $row = $arr[$i];					
 			        echo "<tr>";
-				    for($j = 0; $j < 5; $j++)
+				    for($j = 0; $j < count($row); $j++)
 				        echo "<td>$row[$j]</td>";
 					echo "<td><a href = '#'>update user</a></td><td><a href = '#'>delete user</a></td>";
 					echo "</tr>";
-				}	
-		        
+				}		        
 			?>
 		</table>
 		</div>
 		<div>
-		<?php		    
-			$page_whole = 10;
-			$start = floor(($page_now - 1)/$page_whole) * $page_whole + 1;
-            $end = $start + $page_whole;
-			if ($end > $page_count)
-			    $end = $page_count + 1;			
-
-            if ($start > $page_whole)
-                echo "<a href = manage.php?id=".($page_now-$page_whole)."&&num=$page_size ><<</a>&nbsp;";			
-		    
-			for ($i = $start; $i < $end; $i++)
-			    echo "<a href = manage.php?id=$i&&num=$page_size >[$i]</a>&nbsp;";
-				
-			if($end <= $page_count)
-			    echo "<a href = manage.php?id=".($page_now+$page_whole)."&&num=$page_size >>></a>&nbsp;";
-			
-			if ($page_now > 1)
-			{		
-			    $previous_page = $page_now - 1; 			
-				echo "<a href = manage.php?id=$previous_page&&num=$page_size >pre</a>&nbsp;";
-			}
-            if ($page_now < $page_count)	
-            {
-                $next_page = $page_now + 1; 			
-				echo "<a href = manage.php?id=$next_page&&num=$page_size >next</a>&nbsp;";
-            }
-			echo "<<<a href = manage.php?num=1 >1</a>&nbsp";
-			echo "<a href = manage.php?num=3 >3</a>&nbsp";
-			echo "<a href = manage.php?num=5 >5</a>&nbsp";
-			echo "<a href = manage.php?num=8 >8</a>&nbsp";
-			echo "<a href = manage.php?num=10 >10</a>>>&nbsp";
-			
-			echo "<a href = manage.php?id=1&&num=$page_size >HomePage</a>&nbsp;";
-			echo "<a href = manage.php?id=$page_count&&num=$page_size >EndPage</a>&nbsp;";
-			echo "Pages:".$page_now."/".$page_count."&nbsp";
-			
+		<?php			
+			$pagecut->navigateInfo($pagecut);
+			echo $pagecut->getNavigate();		
 		?>
 		</div>
 		<div>
 		    <form action = "manage.php" method = "get">
 		    Jump to: <input type = "text" name = "id"  /> 
-			<input type = "hidden" name= "num" value = "<?php echo $page_size ?>" /> 
+			<input type = "hidden" name= "num" value = "<?php echo $pagecut->getPage_size ?>" /> 
 			<input type = "submit" value = "Go"/> <br/>
 		    </form>
 		</div>	      

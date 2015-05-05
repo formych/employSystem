@@ -40,6 +40,18 @@
 		
 		}
 		
+		function sql_page_info($sql1, $sql2, $pagecut)
+		{		    
+		    $row_count = $this->sql_query($sql1) or die($this->mysqli->error);
+            $result_arr = $this->sql_query($sql2) or die($this->mysqli->error);	
+			
+            $pagecut->setRow_count($row_count[0][0]); 
+  		    $pagecut->setPage_count(ceil($pagecut->getRow_count() / $pagecut->getPage_size()));			
+			
+			$pagecut->setArr($result_arr);			
+           
+		}
+		
 		function sql_close()
 		{
 		    if (!empty($this->mysqli))
